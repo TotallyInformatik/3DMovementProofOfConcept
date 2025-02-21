@@ -74,4 +74,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Macos
-.DS_Store
+*.DS_Store
