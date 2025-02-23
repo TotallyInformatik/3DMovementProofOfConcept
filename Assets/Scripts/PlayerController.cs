@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityCharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -121,7 +121,6 @@ public class GravityCharacterController : MonoBehaviour
         verticalMovement = Input.GetAxisRaw("Vertical");
 
         moveDirection = transform.forward * verticalMovement + transform.right * horizontalMovement;
-
     }
 
     private void FixedUpdate()
@@ -132,7 +131,6 @@ public class GravityCharacterController : MonoBehaviour
     void MovePlayer()
     {
         rb.AddForce(moveDirection.normalized * moveSpeed * (isGrounded ? movementMul : airMul), ForceMode.Acceleration);
-
     }
 
     void HandleDrag()
