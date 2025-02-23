@@ -11,16 +11,15 @@ public class PlayerController : MonoBehaviour
     public float airDrag = 2f;
     public float playerHeight = 2f;
     [SerializeField] float airMul = 5f;
-
+    
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] KeyCode meleeKey = KeyCode.Mouse0;
 
     [Header("Jumping")]
-    public float jumpForce = 15f;
-    public float launchForce = 3f;
-
+    public float jumpForce = 5f;
+    
     [Header("Melee")]
     public float meleeCooldown = 20f;
     public float meleeDelay = 4f;
@@ -78,10 +77,8 @@ public class PlayerController : MonoBehaviour
     {
         
         if (Input.GetKeyDown(sprintKey))
-
         {
             rb.AddForce(transform.up * jumpForce * 0.05f, ForceMode.Impulse);
-            rb.AddForce(transform.forward * launchForce, ForceMode.Impulse);
         } else
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);

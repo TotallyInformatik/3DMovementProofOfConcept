@@ -449,7 +449,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920369533}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 80
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -482,7 +482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   movementMul: 10
-  rbDrag: 4
+  rbDrag: 3
   airDrag: 2
   playerHeight: 2
   airMul: 2
@@ -490,7 +490,6 @@ MonoBehaviour:
   sprintKey: 304
   meleeKey: 323
   jumpForce: 15
-  launchForce: 3
   meleeCooldown: 0.5
   meleeDelay: 0.04
   meleeRange: 3
