@@ -4,34 +4,49 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed = 6f;
-    public float movementMul = 10f;
-    public float rbDrag = 4f;
-    public float airDrag = 2f;
-    public float playerHeight = 2f;
-    [SerializeField] float airMul = 5f;
-    
-    [Header("Keybinds")]
-    [SerializeField] KeyCode jumpKey = KeyCode.Space;
+    #region Movement variables
+
+    [Header("Movement")] [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float movementMul = 10f;
+    [SerializeField] private float rbDrag = 4f;
+    [SerializeField] private float airDrag = 2f;
+    [SerializeField] private float playerHeight = 2f;
+    [SerializeField] private float airMul = 5f;
+
+    [Header("Jumping")] [SerializeField] private float jumpForce = 5f;
+
+    #endregion
+
+    #region Keybinds
+
+    [Header("Keybinds")] [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] KeyCode meleeKey = KeyCode.Mouse0;
 
-    [Header("Jumping")]
-    public float jumpForce = 5f;
-    
-    [Header("Melee")]
-    public float meleeCooldown = 20f;
+    #endregion
+
+    #region Combat
+
+    [Header("Melee")] public float meleeCooldown = 20f;
     public float meleeDelay = 4f;
     public float meleeRange = 3f;
     public int meleeDamage = 1;
     public LayerMask attackLayer;
 
-    [Header("Camera")]
-    public float defaultFov;
+    #endregion
+
+    #region Camera
+
+    [Header("Camera")] public float defaultFov;
     public float sprintFov;
     float fov;
-    Camera cam;
+    [SerializeField] float xSensitivity = 200.0f;
+    [SerializeField] float ySensitivity = 200.0f;
+    private CameraController _cameraController;
+
+    #endregion
+
+    #region Private Variables
 
     float horizontalMovement;
     float verticalMovement;
@@ -40,18 +55,19 @@ public class PlayerController : MonoBehaviour
     bool isGrounded;
 
     Vector3 moveDirection;
+    private float yaw;
 
     Rigidbody rb;
 
-    // Start is called before the first frame update
+    #endregion
+
     void Start()
     {
-        rb = GetComponent < Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        cam = GetComponentInChildren<Camera>();
+        _cameraController = GetComponent<CameraController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
@@ -59,10 +75,15 @@ public class PlayerController : MonoBehaviour
         HandleInput();
         HandleDrag();
 
-        if(Input.GetKeyDown(jumpKey) && isGrounded)
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             //Jump
             Jump();
+        }
+
+        if (isGrounded && new Vector2(rb.linearVelocity.x, rb.linearVelocity.z).magnitude > 0.05f)
+        {
+            _cameraController.ViewBobbing();
         }
 
         if (Input.GetKeyDown(meleeKey) && !(meleeOnCooldown))
@@ -70,20 +91,65 @@ public class PlayerController : MonoBehaviour
             //Jump
             Melee();
         }
-
     }
+
+    #region movement
 
     void Jump()
     {
-        
         if (Input.GetKeyDown(sprintKey))
         {
             rb.AddForce(transform.up * jumpForce * 0.05f, ForceMode.Impulse);
-        } else
+        }
+        else
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
     }
+
+    void HandleInput()
+    {
+        horizontalMovement = Input.GetAxisRaw("Horizontal");
+        verticalMovement = Input.GetAxisRaw("Vertical");
+        float mouseX = Input.GetAxisRaw("Mouse X");
+        float mouseY = Input.GetAxisRaw("Mouse Y");
+
+        _cameraController.AddPitchInput(mouseY * ySensitivity * 0.01f);
+
+        yaw += mouseX * xSensitivity * 0.01f;
+        transform.rotation = Quaternion.Euler(0, yaw, 0);
+
+
+        moveDirection = transform.forward * verticalMovement + transform.right * horizontalMovement;
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+        _cameraController.HandleMovementTilt(transform.InverseTransformDirection(rb.linearVelocity), Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
+    }
+
+    void MovePlayer()
+    {
+        rb.AddForce(moveDirection.normalized * (moveSpeed * (isGrounded ? movementMul : airMul)), ForceMode.Acceleration);
+    }
+
+    void HandleDrag()
+    {
+        if (isGrounded)
+        {
+            rb.linearDamping = rbDrag;
+        }
+        else
+        {
+            rb.linearDamping = airDrag;
+        }
+    }
+
+    #endregion
+
+
+    #region combat
 
     void Melee()
     {
@@ -91,12 +157,11 @@ public class PlayerController : MonoBehaviour
 
         Invoke(nameof(MeleeRaycast), meleeDelay);
         Invoke(nameof(ResetMelee), meleeCooldown);
-
     }
 
     void MeleeRaycast()
     {
-        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, meleeRange, attackLayer))
+        if (Physics.Raycast(_cameraController.cam.transform.position, _cameraController.cam.transform.forward, out RaycastHit hit, meleeRange, attackLayer))
         {
             HitTarget(hit.point);
         }
@@ -112,33 +177,5 @@ public class PlayerController : MonoBehaviour
         meleeOnCooldown = false;
     }
 
-    void HandleInput()
-    {
-        horizontalMovement = Input.GetAxisRaw("Horizontal");
-        verticalMovement = Input.GetAxisRaw("Vertical");
-
-        moveDirection = transform.forward * verticalMovement + transform.right * horizontalMovement;
-    }
-
-    private void FixedUpdate()
-    {
-        MovePlayer();
-    }
-
-    void MovePlayer()
-    {
-        rb.AddForce(moveDirection.normalized * moveSpeed * (isGrounded ? movementMul : airMul), ForceMode.Acceleration);
-    }
-
-    void HandleDrag()
-    {
-        if (isGrounded)
-        {
-            rb.linearDamping = rbDrag;
-        }
-        else
-        {
-            rb.linearDamping = airDrag;
-        }
-    }
+    #endregion
 }
