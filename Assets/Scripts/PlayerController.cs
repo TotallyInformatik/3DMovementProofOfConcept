@@ -15,10 +15,18 @@ public class GravityCharacterController : MonoBehaviour
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] KeyCode meleeKey = KeyCode.Mouse0;
 
     [Header("Jumping")]
     public float jumpForce = 15f;
     public float launchForce = 3f;
+
+    [Header("Melee")]
+    public float meleeCooldown = 20f;
+    public float meleeDelay = 4f;
+    public float meleeRange = 3f;
+    public int meleeDamage = 1;
+    public LayerMask attackLayer;
 
     [Header("Camera")]
     public float defaultFov;
@@ -29,6 +37,7 @@ public class GravityCharacterController : MonoBehaviour
     float horizontalMovement;
     float verticalMovement;
 
+    bool meleeOnCooldown;
     bool isGrounded;
 
     Vector3 moveDirection;
@@ -57,6 +66,12 @@ public class GravityCharacterController : MonoBehaviour
             Jump();
         }
 
+        if (Input.GetKeyDown(meleeKey) && !(meleeOnCooldown))
+        {
+            //Jump
+            Melee();
+        }
+
     }
 
     void Jump()
@@ -71,6 +86,33 @@ public class GravityCharacterController : MonoBehaviour
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
+    }
+
+    void Melee()
+    {
+        meleeOnCooldown = true;
+
+        Invoke(nameof(MeleeRaycast), meleeDelay);
+        Invoke(nameof(ResetMelee), meleeCooldown);
+
+    }
+
+    void MeleeRaycast()
+    {
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, meleeRange, attackLayer))
+        {
+            HitTarget(hit.point);
+        }
+    }
+
+    void HitTarget(Vector3 point)
+    {
+        Debug.Log("something got hit");
+    }
+
+    void ResetMelee()
+    {
+        meleeOnCooldown = false;
     }
 
     void HandleInput()
