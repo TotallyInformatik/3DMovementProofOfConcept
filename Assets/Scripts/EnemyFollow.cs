@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngineInternal;
 
 public class EnemyFollow : MonoBehaviour
 {
     public Transform target;
     public float speed = 6f;
     private bool triggered = false;
+    private bool hit = false;
+
+    Rigidbody rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,7 +18,7 @@ public class EnemyFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (triggered)
+        if (triggered && !hit)
         {
             transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         }
@@ -35,5 +39,16 @@ public class EnemyFollow : MonoBehaviour
         {
             triggered = false;
         }
+    }
+
+    public void Hit()
+    {
+        hit = true;
+        Invoke(nameof(ResetHit), 1f);
+    }
+
+    void ResetHit()
+    {
+        hit = false;
     }
 }

@@ -164,6 +164,11 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(_cameraController.cam.transform.position, _cameraController.cam.transform.forward, out RaycastHit hit, meleeRange, attackLayer))
         {
             HitTarget(hit.point);
+            if (hit.transform.TryGetComponent<Rigidbody>(out Rigidbody R))
+            {
+                hit.transform.GetComponent<EnemyFollow>().Hit();
+                R.AddForceAtPosition(hit.point, _cameraController.cam.transform.forward * 600f);
+            }
         }
     }
 
