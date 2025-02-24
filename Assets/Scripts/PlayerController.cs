@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airMul = 5f;
 
     [Header("Jumping")] [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float apexStrength = 10f;
+    [SerializeField] private float apexCriticalEdge = 0.2f;
 
     #endregion
 
@@ -39,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Camera")] public float defaultFov;
     public float sprintFov;
-    float fov;
+    float _fov;
     [SerializeField] float xSensitivity = 200.0f;
     [SerializeField] float ySensitivity = 200.0f;
     private CameraController _cameraController;
@@ -48,45 +50,50 @@ public class PlayerController : MonoBehaviour
 
     #region Private Variables
 
-    float horizontalMovement;
-    float verticalMovement;
+    float _horizontalMovement;
+    float _verticalMovement;
+    private bool _reachingApex = false;
 
-    bool meleeOnCooldown;
-    bool isGrounded;
+    bool _meleeOnCooldown;
+    bool _isGrounded;
 
-    Vector3 moveDirection;
-    private float yaw;
+    Vector3 _moveDirection;
+    private float _yaw;
 
-    Rigidbody rb;
+    Rigidbody _rb;
 
     #endregion
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
+        _rb = GetComponent<Rigidbody>();
+        _rb.freezeRotation = true;
         _cameraController = GetComponent<CameraController>();
     }
 
     void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
+
 
         HandleInput();
         HandleDrag();
 
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
+        if (_isGrounded)
         {
-            //Jump
-            Jump();
+            if (new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude > 0.05f)
+            {
+                _cameraController.ViewBobbing();
+            }
+            if (Input.GetKeyDown(jumpKey))
+            {
+                //Jump
+                Jump();
+            }
         }
 
-        if (isGrounded && new Vector2(rb.linearVelocity.x, rb.linearVelocity.z).magnitude > 0.05f)
-        {
-            _cameraController.ViewBobbing();
-        }
 
-        if (Input.GetKeyDown(meleeKey) && !(meleeOnCooldown))
+        if (Input.GetKeyDown(meleeKey) && !(_meleeOnCooldown))
         {
             //Jump
             Melee();
@@ -97,52 +104,62 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        _reachingApex = true;
         if (Input.GetKeyDown(sprintKey))
         {
-            rb.AddForce(transform.up * jumpForce * 0.05f, ForceMode.Impulse);
+            _rb.AddForce(transform.up * (jumpForce * 0.05f), ForceMode.Impulse);
         }
         else
         {
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
     }
 
     void HandleInput()
     {
-        horizontalMovement = Input.GetAxisRaw("Horizontal");
-        verticalMovement = Input.GetAxisRaw("Vertical");
+        _horizontalMovement = Input.GetAxisRaw("Horizontal");
+        _verticalMovement = Input.GetAxisRaw("Vertical");
         float mouseX = Input.GetAxisRaw("Mouse X");
         float mouseY = Input.GetAxisRaw("Mouse Y");
 
         _cameraController.AddPitchInput(mouseY * ySensitivity * 0.01f);
 
-        yaw += mouseX * xSensitivity * 0.01f;
-        transform.rotation = Quaternion.Euler(0, yaw, 0);
+        _yaw += mouseX * xSensitivity * 0.01f;
+        transform.rotation = Quaternion.Euler(0, _yaw, 0);
 
 
-        moveDirection = transform.forward * verticalMovement + transform.right * horizontalMovement;
+        _moveDirection = transform.forward * _verticalMovement + transform.right * _horizontalMovement;
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
-        _cameraController.HandleMovementTilt(transform.InverseTransformDirection(rb.linearVelocity), Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
+        _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
+            Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
+
+        if (_reachingApex && _rb.linearVelocity.y < apexCriticalEdge)
+        {
+            _reachingApex = false;
+            _rb.AddForce(Vector3.down * apexStrength, ForceMode.VelocityChange);
+            //Debug.Log("will this affect lebron's legacy?");
+        }
     }
 
     void MovePlayer()
     {
-        rb.AddForce(moveDirection.normalized * (moveSpeed * (isGrounded ? movementMul : airMul)), ForceMode.Acceleration);
+        _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
+            ForceMode.Acceleration);
     }
 
     void HandleDrag()
     {
-        if (isGrounded)
+        if (_isGrounded)
         {
-            rb.linearDamping = rbDrag;
+            _rb.linearDamping = rbDrag;
         }
         else
         {
-            rb.linearDamping = airDrag;
+            _rb.linearDamping = airDrag;
         }
     }
 
@@ -153,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
     void Melee()
     {
-        meleeOnCooldown = true;
+        _meleeOnCooldown = true;
 
         Invoke(nameof(MeleeRaycast), meleeDelay);
         Invoke(nameof(ResetMelee), meleeCooldown);
@@ -161,7 +178,8 @@ public class PlayerController : MonoBehaviour
 
     void MeleeRaycast()
     {
-        if (Physics.Raycast(_cameraController.cam.transform.position, _cameraController.cam.transform.forward, out RaycastHit hit, meleeRange, attackLayer))
+        if (Physics.Raycast(_cameraController.cam.transform.position, _cameraController.cam.transform.forward,
+                out RaycastHit hit, meleeRange, attackLayer))
         {
             HitTarget(hit.point);
             if (hit.transform.TryGetComponent<Rigidbody>(out Rigidbody R))
@@ -179,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
     void ResetMelee()
     {
-        meleeOnCooldown = false;
+        _meleeOnCooldown = false;
     }
 
     #endregion
