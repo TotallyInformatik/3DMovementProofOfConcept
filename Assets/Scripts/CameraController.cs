@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float viewBobFrequency = 10f;
     
     private Vector3 startPos;
+    private Quaternion _targetRotation;
 
 
     // Start is called before the first frame update
@@ -33,6 +34,8 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        cameraParent.transform.localRotation = Quaternion.Slerp(cameraParent.transform.localRotation, _targetRotation,
+            Time.deltaTime * slerpFactor);
     }
 
     public void AddPitchInput(float amount)
@@ -55,9 +58,7 @@ public class CameraController : MonoBehaviour
         pitch = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (forwardFactor + 0.5f)), -maxTilt, maxTilt);
         roll = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (rightFactor + 0.5f)), -maxTilt, maxTilt);
 
-        Quaternion targetRotation = Quaternion.Euler(pitch, 0, roll);
-        cameraParent.transform.localRotation = Quaternion.Slerp(cameraParent.transform.localRotation, targetRotation,
-            Time.deltaTime * slerpFactor);
+        _targetRotation = Quaternion.Euler(pitch, 0, roll);
         lastYRot = transform.rotation.y;
     }
 
@@ -67,6 +68,16 @@ public class CameraController : MonoBehaviour
         {
             cam.transform.localPosition = Vector3.Slerp(cam.transform.localPosition, startPos, Time.deltaTime);
         }
+    }
+
+    public void JumpSpasm()
+    {
+        _targetRotation = Quaternion.Euler(-maxTilt * 10, 0, 0);
+    }
+
+    public void ImpactJerk()
+    {
+        _targetRotation = Quaternion.Euler(maxTilt * 10, 0, 0);
     }
 
     public void ViewBobbing()

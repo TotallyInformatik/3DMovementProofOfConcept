@@ -73,8 +73,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
+        bool newIsGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
 
+        if (newIsGrounded && !_isGrounded)
+        {
+            _cameraController.ImpactJerk();
+        }
+        
+        _isGrounded = newIsGrounded;
 
         HandleInput();
         HandleDrag();
@@ -89,6 +95,7 @@ public class PlayerController : MonoBehaviour
             {
                 //Jump
                 Jump();
+                //_cameraController.JumpSpasm();
             }
         }
 
