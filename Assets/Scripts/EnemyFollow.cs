@@ -25,10 +25,8 @@ public class EnemyFollow : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Enemy Update Running");
         if (other.CompareTag("PlayerTrigger"))
         {
-            Debug.Log("Triggered");
             triggered = true;
         }
     }
@@ -51,4 +49,5 @@ public class EnemyFollow : MonoBehaviour
     {
         hit = false;
     }
+    
 }
