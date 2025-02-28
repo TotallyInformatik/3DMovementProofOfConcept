@@ -492,6 +492,7 @@ MonoBehaviour:
   jumpKey: 32
   sprintKey: 304
   meleeKey: 323
+  dashKey: 306
   meleeCooldown: 0.5
   meleeDelay: 0.04
   meleeRange: 3
@@ -499,6 +500,9 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 64
+  dashCooldown: 3
+  dashDelay: 2
+  dashForce: 80
   defaultFov: 0
   sprintFov: 0
   xSensitivity: 200
@@ -973,7 +977,7 @@ SpriteRenderer:
   m_Size: {x: 4.2, y: 4.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2017864245

@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [Header("Keybinds")] [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] KeyCode meleeKey = KeyCode.Mouse0;
+    [SerializeField] KeyCode dashKey = KeyCode.LeftControl;
 
     #endregion
 
@@ -34,6 +35,14 @@ public class PlayerController : MonoBehaviour
     public float meleeRange = 3f;
     public int meleeDamage = 1;
     public LayerMask attackLayer;
+
+    #endregion
+
+    #region Dash
+
+    [Header("Dash")] public float dashCooldown = 2f;
+    public float dashDelay = 0.01f;
+    public float dashForce = 40f;
 
     #endregion
 
@@ -55,6 +64,7 @@ public class PlayerController : MonoBehaviour
     private bool _reachingApex = false;
 
     bool _meleeOnCooldown;
+    bool _dashOnCooldown;
     bool _isGrounded;
 
     Vector3 _moveDirection;
@@ -93,7 +103,6 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetKeyDown(jumpKey))
             {
-                //Jump
                 Jump();
                 //_cameraController.JumpSpasm();
             }
@@ -102,9 +111,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(meleeKey) && !(_meleeOnCooldown))
         {
-            //Jump
             Melee();
         }
+
+        if (Input.GetKeyDown(dashKey) && !(_dashOnCooldown))
+        {
+            Dash();
+        }
+        //Debug.Log(_dashOnCooldown.ToString());
     }
 
     #region movement
@@ -157,7 +171,7 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
             ForceMode.Acceleration);
     }
-
+    
     void HandleDrag()
     {
         if (_isGrounded)
@@ -205,6 +219,30 @@ public class PlayerController : MonoBehaviour
     void ResetMelee()
     {
         _meleeOnCooldown = false;
+    }
+
+    #endregion
+
+    #region dash
+
+    void Dash()
+    {
+        _dashOnCooldown = true;
+
+        DashAction();
+        Invoke(nameof(ResetDash), dashCooldown);
+    }
+
+    void DashAction()
+    {
+        Debug.Log("Dash!");
+        _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
+        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
+    }
+
+    void ResetDash()
+    {
+        _dashOnCooldown = false;
     }
 
     #endregion
