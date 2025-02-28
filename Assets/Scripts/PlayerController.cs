@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")] [SerializeField] private float moveSpeed = 6f;
     [SerializeField] private float movementMul = 10f;
     [SerializeField] private float rbDrag = 4f;
-    [SerializeField] private float airDrag = 2f;
+    [SerializeField] private float airDrag = 4f;
     [SerializeField] private float playerHeight = 2f;
     [SerializeField] private float airMul = 5f;
 
@@ -129,13 +130,18 @@ public class PlayerController : MonoBehaviour
         float mouseX = Input.GetAxisRaw("Mouse X");
         float mouseY = Input.GetAxisRaw("Mouse Y");
 
-        _cameraController.AddPitchInput(mouseY * ySensitivity * 0.01f);
+        _cameraController.AddPitchInput(mouseY * ySensitivity * 0.001f);
 
         _yaw += mouseX * xSensitivity * 0.01f;
         transform.rotation = Quaternion.Euler(0, _yaw, 0);
 
-
         _moveDirection = transform.forward * _verticalMovement + transform.right * _horizontalMovement;
+
+
+        if (Mathf.Approximately(_moveDirection.magnitude, 0)) {
+            _rb.AddForce(new Vector3(0, 0, 0), ForceMode.Impulse);  
+        }
+
     }
 
     private void FixedUpdate()
@@ -144,29 +150,40 @@ public class PlayerController : MonoBehaviour
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
             Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
 
-        if (_reachingApex && _rb.linearVelocity.y < apexCriticalEdge)
+        if (_reachingApex && (_rb.linearVelocity.y < apexCriticalEdge))
         {
             _reachingApex = false;
             _rb.AddForce(Vector3.down * apexStrength, ForceMode.VelocityChange);
-            //Debug.Log("will this affect lebron's legacy?");
+            Debug.Log("will this affect lebron's legacy?");
         }
     }
 
     void MovePlayer()
     {
         _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
-            ForceMode.Acceleration);
+           ForceMode.VelocityChange);
     }
 
     void HandleDrag()
     {
         if (_isGrounded)
         {
-            _rb.linearDamping = rbDrag;
+            //_rb.linearDamping = rbDrag;
+            _rb.linearVelocity = new Vector3(
+                Mathf.Lerp(_rb.linearVelocity.x, 0, Time.deltaTime * (1 / rbDrag)),
+                _rb.linearVelocity.y,
+                Mathf.Lerp(_rb.linearVelocity.z, 0, Time.deltaTime * (1 / rbDrag))
+            );
         }
         else
         {
-            _rb.linearDamping = airDrag;
+
+            _rb.linearVelocity = new Vector3(
+                Mathf.Lerp(_rb.linearVelocity.x, 0, Time.deltaTime * (1 / airDrag)),
+                _rb.linearVelocity.y,
+                Mathf.Lerp(_rb.linearVelocity.z, 0, Time.deltaTime * (1 / airDrag))
+            );
+            //_rb.linearDamping = airDrag;
         }
     }
 
