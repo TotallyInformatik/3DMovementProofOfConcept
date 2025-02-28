@@ -12,6 +12,8 @@ public class EnemyFollow : MonoBehaviour
     public float timer;
     public float wanderRadius = 20f;
     private Vector3 goal;
+    private int health = 3;
+    private bool dead = false;
 
     Rigidbody rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,23 +29,39 @@ public class EnemyFollow : MonoBehaviour
     {
         //Vector3 goal = transform.position;
         timer += Time.deltaTime;
-        if (triggered && !hit)
+        //while (health > 0)
+        //{
+            if (triggered && !hit && health > 0)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+            }
+            else if (timer >= wanderTimer && !triggered && !hit && health > 0)
+            {
+                Vector3 pos = transform.position;
+                float x = Random.Range(pos.x - wanderRadius, pos.x + wanderRadius);
+                float z = Random.Range(pos.z - wanderRadius, pos.z + wanderRadius);
+                goal = new Vector3(x, pos.y, z);
+
+                timer = 0;
+            }
+            if (!triggered && !hit && health > 0)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
+            }
+        //}
+        /*
+        if (!dead)
         {
-            transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+            transform.Rotate(0, 0, 90);
+            dead = true;
         }
-        else if (timer >= wanderTimer && !triggered && !hit)
+        
+        if (health <= 0)
         {
-            Vector3 pos = transform.position;
-            float x = Random.Range(pos.x - wanderRadius, pos.x + wanderRadius);
-            float z = Random.Range(pos.z - wanderRadius, pos.z + wanderRadius);
-            goal = new Vector3(x, pos.y, z);
+            //Destroy(gameObject);
             
-            timer = 0;
         }
-        if (!triggered && !hit)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
-        }
+        */
     }
     void OnTriggerEnter(Collider other)
     {
@@ -64,6 +82,8 @@ public class EnemyFollow : MonoBehaviour
     public void Hit()
     {
         hit = true;
+        health--;
+        Debug.Log("health" + health);
         Invoke(nameof(ResetHit), 1f);
     }
 
