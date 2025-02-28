@@ -31,7 +31,7 @@ public class EnemyFollow : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         }
-        else if (timer >= wanderTimer)
+        else if (timer >= wanderTimer && !triggered && !hit)
         {
             Vector3 pos = transform.position;
             float x = Random.Range(pos.x - wanderRadius, pos.x + wanderRadius);
@@ -40,7 +40,7 @@ public class EnemyFollow : MonoBehaviour
             
             timer = 0;
         }
-        if (!triggered)
+        if (!triggered && !hit)
         {
             transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
         }
