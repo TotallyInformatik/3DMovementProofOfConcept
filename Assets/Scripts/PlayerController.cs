@@ -98,8 +98,7 @@ public class PlayerController : MonoBehaviour
                 //_cameraController.JumpSpasm();
             }
         }
-
-
+        
         if (Input.GetKeyDown(meleeKey) && !(_meleeOnCooldown))
         {
             //Jump
