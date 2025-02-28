@@ -13,10 +13,10 @@ public class CameraController : MonoBehaviour
     private float pitch, roll;
     private float xRot;
     private float lastYRot;
-    [SerializeField] private float slerpFactor = 0.1f;
+    [SerializeField] private float slerpFactor = 3f;
     [SerializeField] private bool enableViewBobbing = true;
-    [SerializeField] private float viewBobAmplitude = 0.015f;
-    [SerializeField] private float viewBobFrequency = 10f;
+    [SerializeField] private float viewBobAmplitude = 0.0004f;
+    [SerializeField] private float viewBobFrequency = 7f;
     
     private Vector3 startPos;
     private Quaternion _targetRotation;

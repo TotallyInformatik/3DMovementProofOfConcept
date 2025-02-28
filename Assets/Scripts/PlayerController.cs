@@ -7,16 +7,16 @@ public class PlayerController : MonoBehaviour
 {
     #region Movement variables
 
-    [Header("Movement")] [SerializeField] private float moveSpeed = 6f;
-    [SerializeField] private float airMovementMul = 0.01f;
-    [SerializeField] private float movementMul = 10f;
-    [SerializeField] private float rbDrag = 4f;
-    [SerializeField] private float airDrag = 4f;
+    [Header("Movement")] [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float airMovementMul = 0.02f;
+    [SerializeField] private float movementMul = 2f;
+    [SerializeField] private float rbDrag = 10f;
+    [SerializeField] private float airDrag = 0f;
     [SerializeField] private float playerHeight = 2f;
-    [SerializeField] private float airMul = 5f;
+    [SerializeField] private float airMul = 2f;
 
-    [Header("Jumping")] [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float apexStrength = 10f;
+    [Header("Jumping")] [SerializeField] private float jumpForce = 32000f;
+    [SerializeField] private float apexStrength = 25f;
     [SerializeField] private float apexCriticalEdge = 0.2f;
 
     #endregion
@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
 
     #region Combat
 
-    [Header("Melee")] public float meleeCooldown = 20f;
-    public float meleeDelay = 4f;
+    [Header("Melee")] public float meleeCooldown = 0.5f;
+    public float meleeDelay = 0.04f;
     public float meleeRange = 3f;
     public int meleeDamage = 1;
     public LayerMask attackLayer;
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Dash")] public float dashCooldown = 2f;
     public float dashDelay = 0.01f;
-    public float dashForce = 40f;
+    public float dashForce = 90f;
 
     #endregion
 
