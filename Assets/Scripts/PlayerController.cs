@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,15 +7,16 @@ public class PlayerController : MonoBehaviour
 {
     #region Movement variables
 
-    [Header("Movement")] [SerializeField] private float moveSpeed = 6f;
-    [SerializeField] private float movementMul = 10f;
-    [SerializeField] private float rbDrag = 4f;
-    [SerializeField] private float airDrag = 2f;
+    [Header("Movement")] [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float airMovementMul = 0.02f;
+    [SerializeField] private float movementMul = 2f;
+    [SerializeField] private float rbDrag = 10f;
+    [SerializeField] private float airDrag = 0f;
     [SerializeField] private float playerHeight = 2f;
-    [SerializeField] private float airMul = 5f;
+    [SerializeField] private float airMul = 2f;
 
-    [Header("Jumping")] [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float apexStrength = 10f;
+    [Header("Jumping")] [SerializeField] private float jumpForce = 32000f;
+    [SerializeField] private float apexStrength = 25f;
     [SerializeField] private float apexCriticalEdge = 0.2f;
 
     #endregion
@@ -30,8 +32,8 @@ public class PlayerController : MonoBehaviour
 
     #region Combat
 
-    [Header("Melee")] public float meleeCooldown = 20f;
-    public float meleeDelay = 4f;
+    [Header("Melee")] public float meleeCooldown = 0.5f;
+    public float meleeDelay = 0.04f;
     public float meleeRange = 3f;
     public int meleeDamage = 1;
     public LayerMask attackLayer;
@@ -42,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Dash")] public float dashCooldown = 2f;
     public float dashDelay = 0.01f;
-    public float dashForce = 40f;
+    public float dashForce = 90f;
 
     #endregion
 
@@ -147,8 +149,13 @@ public class PlayerController : MonoBehaviour
         _yaw += mouseX * xSensitivity * 0.01f;
         transform.rotation = Quaternion.Euler(0, _yaw, 0);
 
-
         _moveDirection = transform.forward * _verticalMovement + transform.right * _horizontalMovement;
+
+
+        if (Mathf.Approximately(_moveDirection.magnitude, 0)) {
+            _rb.AddForce(new Vector3(0, 0, 0), ForceMode.Impulse);  
+        }
+
     }
 
     private void FixedUpdate()
@@ -157,18 +164,25 @@ public class PlayerController : MonoBehaviour
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
             Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
 
-        if (_reachingApex && _rb.linearVelocity.y < apexCriticalEdge)
+        if (_reachingApex && (_rb.linearVelocity.y < apexCriticalEdge))
         {
             _reachingApex = false;
             _rb.AddForce(Vector3.down * apexStrength, ForceMode.VelocityChange);
-            //Debug.Log("will this affect lebron's legacy?");
+            Debug.Log("will this affect lebron's legacy?");
         }
     }
 
     void MovePlayer()
     {
-        _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
-            ForceMode.Acceleration);
+
+        if (_isGrounded) {
+            _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
+                ForceMode.VelocityChange);
+        } else {
+            _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)) * airMovementMul,
+                ForceMode.VelocityChange);
+        }
+        
     }
     
     void HandleDrag()
@@ -176,10 +190,21 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded)
         {
             _rb.linearDamping = rbDrag;
+            // _rb.linearVelocity = new Vector3(
+            //     _rb.linearVelocity.x * Time.deltaTime * (1 / rbDrag),
+            //     _rb.linearVelocity.y,
+            //     _rb.linearVelocity.z * Time.deltaTime * (1 / rbDrag)
+            // );
         }
         else
         {
-            _rb.linearDamping = airDrag;
+
+            _rb.linearDamping = 0;
+            // _rb.linearVelocity = new Vector3(
+            //     _rb.linearVelocity.x * Time.deltaTime * (1 / airDrag),
+            //     _rb.linearVelocity.y,
+            //     _rb.linearVelocity.z * Time.deltaTime * (1 / airDrag)
+            // );
         }
     }
 
@@ -236,7 +261,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Dash!");
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
-        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
+        _rb.AddForce(_cameraController.cam.transform.forward * dashForce * movementMul, ForceMode.VelocityChange);
     }
 
     void ResetDash()
