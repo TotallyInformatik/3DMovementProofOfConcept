@@ -145,7 +145,7 @@ public class PlayerController : MonoBehaviour
         float mouseX = Input.GetAxisRaw("Mouse X");
         float mouseY = Input.GetAxisRaw("Mouse Y");
 
-        _cameraController.AddPitchInput(mouseY * ySensitivity * 0.001f);
+        _cameraController.AddPitchInput(mouseY * ySensitivity * 0.01f);
 
         _yaw += mouseX * xSensitivity * 0.01f;
         transform.rotation = Quaternion.Euler(0, _yaw, 0);
