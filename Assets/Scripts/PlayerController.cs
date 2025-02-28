@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     #region Movement variables
 
     [Header("Movement")] [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float airMovementMul = 0.01f;
     [SerializeField] private float movementMul = 10f;
     [SerializeField] private float rbDrag = 4f;
     [SerializeField] private float airDrag = 4f;
@@ -174,30 +175,37 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer()
     {
-        _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
-           ForceMode.VelocityChange);
+
+        if (_isGrounded) {
+            _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)),
+                ForceMode.VelocityChange);
+        } else {
+            _rb.AddForce(_moveDirection.normalized * (moveSpeed * (_isGrounded ? movementMul : airMul)) * airMovementMul,
+                ForceMode.VelocityChange);
+        }
+        
     }
     
     void HandleDrag()
     {
         if (_isGrounded)
         {
-            //_rb.linearDamping = rbDrag;
-            _rb.linearVelocity = new Vector3(
-                Mathf.Lerp(_rb.linearVelocity.x, 0, Time.deltaTime * (1 / rbDrag)),
-                _rb.linearVelocity.y,
-                Mathf.Lerp(_rb.linearVelocity.z, 0, Time.deltaTime * (1 / rbDrag))
-            );
+            _rb.linearDamping = rbDrag;
+            // _rb.linearVelocity = new Vector3(
+            //     _rb.linearVelocity.x * Time.deltaTime * (1 / rbDrag),
+            //     _rb.linearVelocity.y,
+            //     _rb.linearVelocity.z * Time.deltaTime * (1 / rbDrag)
+            // );
         }
         else
         {
 
-            _rb.linearVelocity = new Vector3(
-                Mathf.Lerp(_rb.linearVelocity.x, 0, Time.deltaTime * (1 / airDrag)),
-                _rb.linearVelocity.y,
-                Mathf.Lerp(_rb.linearVelocity.z, 0, Time.deltaTime * (1 / airDrag))
-            );
-            //_rb.linearDamping = airDrag;
+            _rb.linearDamping = 0;
+            // _rb.linearVelocity = new Vector3(
+            //     _rb.linearVelocity.x * Time.deltaTime * (1 / airDrag),
+            //     _rb.linearVelocity.y,
+            //     _rb.linearVelocity.z * Time.deltaTime * (1 / airDrag)
+            // );
         }
     }
 
@@ -254,7 +262,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Dash!");
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
-        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
+        _rb.AddForce(_cameraController.cam.transform.forward * dashForce * movementMul, ForceMode.VelocityChange);
     }
 
     void ResetDash()
