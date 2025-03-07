@@ -94,6 +94,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+        // Debug.Log("readyToJump " + readyToJump);
+        // Debug.Log("dropOnCooldown " + _dropOnCooldown);
+
+
         bool newIsGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
 
         if (newIsGrounded && !_isGrounded)
@@ -118,20 +123,13 @@ public class PlayerController : MonoBehaviour
 
         if (_isGrounded)
         {
+            if (_imDropping == true) {
+                _imDropping =  false;
+                _rb.AddForce(new Vector3(0, 9, 0), ForceMode.VelocityChange);
+            }
             if (new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude > 0.05f)
             {
                 _cameraController.ViewBobbing();
-            }
-            if (Input.GetKeyDown(jumpKey))
-            {
-                Jump();
-                //_cameraController.JumpSpasm();
-            }
-            if (_imDropping == true)
-            {
-                _rb.AddForce(new Vector3(0, 9, 0), ForceMode.VelocityChange);
-                _imDropping = false;
-
             }
         }
 
@@ -145,6 +143,8 @@ public class PlayerController : MonoBehaviour
             Dash();
         }
 
+        Debug.Log(_imDropping);
+        Debug.Log(_dropOnCooldown);
         if (Input.GetKeyDown(dropKey) && !(_imDropping) && !(_dropOnCooldown))
         {
             Drop();
@@ -311,12 +311,14 @@ public class PlayerController : MonoBehaviour
 
     void DropAction()
     {
+        Debug.Log("Dropping!!!");
         _rb.AddForce(new Vector3(_rb.linearVelocity.x * -1f, -dropSpeed, _rb.linearVelocity.z * -1f), ForceMode.VelocityChange);
     }
 
     void ResetDrop()
     {
         _dropOnCooldown = false;
+        _imDropping = false;
     }
 
     #endregion

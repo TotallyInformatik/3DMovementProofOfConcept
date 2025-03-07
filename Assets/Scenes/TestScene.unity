@@ -488,7 +488,7 @@ MonoBehaviour:
   rbDrag: 15
   playerHeight: 2
   jumpForce: 20
-  jumpCooldown: 0.25
+  jumpCooldown: 0.2
   jumpKey: 32
   sprintKey: 304
   meleeKey: 323
