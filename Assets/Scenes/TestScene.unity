@@ -493,6 +493,7 @@ MonoBehaviour:
   sprintKey: 304
   meleeKey: 323
   dashKey: 306
+  dropKey: 113
   meleeCooldown: 0.5
   meleeDelay: 0.04
   meleeRange: 3
@@ -501,12 +502,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   dashCooldown: 2
-  dashDelay: 0.01
+  dashDelay: 0.1
   dashForce: 90
   defaultFov: 0
   sprintFov: 0
   xSensitivity: 200
   ySensitivity: 200
+  dropSpeed: 20
+  dropDelay: 0.1
+  dropCooldown: 1.5
 --- !u!114 &920369540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,7 +981,7 @@ SpriteRenderer:
   m_Size: {x: 4.2, y: 4.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2017864245
