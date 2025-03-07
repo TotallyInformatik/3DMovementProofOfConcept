@@ -452,7 +452,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920369533}
   serializedVersion: 4
-  m_Mass: 80
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -483,15 +483,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4af2ba85f80cd48a4ad0a3e2bcb9b02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 2
+  airMovementMul: 0.1
   movementMul: 2
-  rbDrag: 4
-  airDrag: 4
+  rbDrag: 10
+  airDrag: 0
   playerHeight: 2
   airMul: 2
-  jumpForce: 25
+  jumpForce: 32000
   apexStrength: 25
-  apexCriticalEdge: 0.001
+  apexCriticalEdge: 0.2
   jumpKey: 32
   sprintKey: 304
   meleeKey: 323
@@ -503,9 +504,9 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 64
-  dashCooldown: 3
-  dashDelay: 2
-  dashForce: 80
+  dashCooldown: 2
+  dashDelay: 0.01
+  dashForce: 90
   defaultFov: 0
   sprintFov: 0
   xSensitivity: 200
@@ -980,7 +981,7 @@ SpriteRenderer:
   m_Size: {x: 4.2, y: 4.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2017864245
