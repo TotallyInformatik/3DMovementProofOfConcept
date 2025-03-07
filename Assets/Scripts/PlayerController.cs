@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         {
             _cameraController.ImpactJerk();
         }
-        
+             
         _isGrounded = newIsGrounded;
 
         HandleInput();
