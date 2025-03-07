@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
         {
             _cameraController.ImpactJerk();
         }
-        
+             
         _isGrounded = newIsGrounded;
 
         HandleInput();
@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
                 _cameraController.ViewBobbing();
             }
         }
+        
 
         if (Input.GetKeyDown(meleeKey) && !(_meleeOnCooldown))
         {
