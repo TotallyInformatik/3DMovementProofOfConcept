@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
 
         if (Mathf.Approximately(_moveDirection.magnitude, 0)) {
-            _rb.AddForce(new Vector3(0, 0, 0), ForceMode.Impulse);  
+            _rb.AddForce(new Vector3(0, 0, 0), ForceMode.Impulse);
         }
 
     }
