@@ -233,7 +233,7 @@ public class PlayerController : MonoBehaviour
             HitTarget(hit.point);
             if (hit.transform.TryGetComponent<Rigidbody>(out Rigidbody R))
             {
-                hit.transform.GetComponent<EnemyFollow>().Hit();
+                hit.transform.GetComponent<EnemyScript>().Hit();
                 R.AddForceAtPosition(hit.point, _cameraController.cam.transform.forward * 600f);
             }
         }
