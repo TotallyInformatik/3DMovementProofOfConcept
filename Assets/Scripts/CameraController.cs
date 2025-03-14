@@ -13,10 +13,10 @@ public class CameraController : MonoBehaviour
     private float pitch, roll;
     private float xRot;
     private float lastYRot;
-    [SerializeField] private float slerpFactor = 0.1f;
+    [SerializeField] private float slerpFactor = 3f;
     [SerializeField] private bool enableViewBobbing = true;
-    [SerializeField] private float viewBobAmplitude = 0.015f;
-    [SerializeField] private float viewBobFrequency = 10f;
+    [SerializeField] private float viewBobAmplitude = 0.0004f;
+    [SerializeField] private float viewBobFrequency = 7f;
     
     private Vector3 startPos;
     private Quaternion _targetRotation;
@@ -41,6 +41,7 @@ public class CameraController : MonoBehaviour
     public void AddPitchInput(float amount)
     {
         xRot -= amount;
+        xRot = Mathf.Clamp(xRot, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRot, 0, 0);
     }
 
@@ -55,8 +56,8 @@ public class CameraController : MonoBehaviour
         float rightFactor = -right;
         if (Mathf.Abs(velocity.x) < Mathf.Epsilon) rightFactor = 0;
 
-        pitch = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (forwardFactor + 0.5f)), -maxTilt, maxTilt);
-        roll = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (rightFactor + 0.5f)), -maxTilt, maxTilt);
+        pitch = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, forwardFactor + 0.5f), -maxTilt, maxTilt);
+        roll = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, rightFactor + 0.5f), -maxTilt, maxTilt);
 
         _targetRotation = Quaternion.Euler(pitch, 0, roll);
         lastYRot = transform.rotation.y;

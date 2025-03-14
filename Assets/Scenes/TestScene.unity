@@ -186,8 +186,6 @@ GameObject:
   - component: {fileID: 808991136}
   - component: {fileID: 808991135}
   - component: {fileID: 808991140}
-  - component: {fileID: 808991141}
-  - component: {fileID: 808991142}
   m_Layer: 6
   m_Name: EvilBEAN
   m_TagString: Untagged
@@ -328,11 +326,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 298189716}
   speed: 2
-  wanderTimer: 5
-  timer: 0
-  wanderRadius: 20
-  rib: {fileID: 808991135}
-  mv: 20
 --- !u!195 &808991141
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -367,6 +360,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9029704dc0018549ae00bba93adf53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 298189716}
+  speed: 6
+  wanderRadius: 10
+  wanderTimer: 5
 --- !u!1 &920369533
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +487,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920369533}
   serializedVersion: 4
-  m_Mass: 80
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -506,9 +503,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &920369539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,19 +518,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4af2ba85f80cd48a4ad0a3e2bcb9b02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  movementMul: 10
-  rbDrag: 3
-  airDrag: 2
+  moveSpeed: 40
+  airMovementMul: 0.02
+  rbDrag: 15
   playerHeight: 2
-  airMul: 2
-  jumpForce: 2500
-  apexStrength: 25
-  apexCriticalEdge: 0.001
+  jumpForce: 40
+  jumpCooldown: 0.3
   jumpKey: 32
   sprintKey: 304
   meleeKey: 323
   dashKey: 306
+  dropKey: 113
   meleeCooldown: 0.5
   meleeDelay: 0.04
   meleeRange: 3
@@ -541,13 +536,16 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 64
-  dashCooldown: 3
-  dashDelay: 2
-  dashForce: 80
+  dashCooldown: 2
+  dashDelay: 0.1
+  dashForce: 90
   defaultFov: 0
   sprintFov: 0
   xSensitivity: 200
   ySensitivity: 200
+  dropSpeed: 20
+  dropDelay: 0.1
+  dropCooldown: 1.5
 --- !u!114 &920369540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,12 +560,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   cameraParent: {fileID: 2038552102}
-  targetTilt: 10
+  targetTilt: 5
   maxTilt: 3
   slerpFactor: 3
   enableViewBobbing: 1
-  viewBobAmplitude: 0.001
-  viewBobFrequency: 13
+  viewBobAmplitude: 0.0004
+  viewBobFrequency: 7
 --- !u!1 &992349023
 GameObject:
   m_ObjectHideFlags: 0
@@ -1216,8 +1214,6 @@ GameObject:
   - component: {fileID: 2041880289}
   - component: {fileID: 2041880288}
   - component: {fileID: 2041880287}
-  - component: {fileID: 2041880291}
-  - component: {fileID: 2041880292}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -1316,65 +1312,6 @@ Transform:
   - {fileID: 1719552005}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &2041880291
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2041880286}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &2041880292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2041880286}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_GenerateLinks: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 5c84d381e5baf194a9876051ac5bb5e2, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
