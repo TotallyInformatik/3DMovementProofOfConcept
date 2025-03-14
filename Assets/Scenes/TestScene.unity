@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 169051863}
   - component: {fileID: 169051862}
   - component: {fileID: 169051861}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: leafy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,7 +614,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 615768018}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: tree (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 624539593}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1639,7 +1639,7 @@ GameObject:
   - component: {fileID: 1514203349}
   - component: {fileID: 1514203348}
   - component: {fileID: 1514203347}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: leafy (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1748,7 +1748,7 @@ GameObject:
   - component: {fileID: 1635123117}
   - component: {fileID: 1635123116}
   - component: {fileID: 1635123115}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: trunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2212,7 +2212,7 @@ GameObject:
   - component: {fileID: 1922755672}
   - component: {fileID: 1922755671}
   - component: {fileID: 1922755670}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: leafy (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2408,7 +2408,7 @@ GameObject:
   - component: {fileID: 1970690644}
   - component: {fileID: 1970690643}
   - component: {fileID: 1970690642}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: leafy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2517,7 +2517,7 @@ GameObject:
   - component: {fileID: 1990455890}
   - component: {fileID: 1990455889}
   - component: {fileID: 1990455888}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: trunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
