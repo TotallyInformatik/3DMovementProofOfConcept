@@ -1590,6 +1590,7 @@ MonoBehaviour:
     m_Bits: 64
   dashCooldown: 2
   dashDelay: 0.1
+  dashDuration: 0.1
   dashForce: 400
   defaultFov: 75
   sprintFov: 90
@@ -2513,7 +2514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1522704512}
   m_Layer: 0
-  m_Name: many trains are run on me
+  m_Name: most trains are ran on me
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
