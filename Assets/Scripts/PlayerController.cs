@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Dash")] public float dashCooldown = 2f;
     public float dashDelay = 0.1f;
+    public float dashDuration = 0.1f;
     public float dashForce = 90f;
 
     #endregion
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour
     bool _dropOnCooldown;
     bool _isGrounded;
     bool _imDropping;
+    bool _dashing = false;
 
     Vector3 _moveDirection;
     private float _yaw;
@@ -90,6 +92,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         _cameraController = GetComponent<CameraController>();
+        _cameraController.SetFOV(defaultFov);
     }
 
     void Update()
@@ -107,7 +110,6 @@ public class PlayerController : MonoBehaviour
 
         HandleInput();
         HandleDrag();
-        SpeedControl();
 
 
         if (Input.GetKey(jumpKey) && _isGrounded && readyToJump)
@@ -122,7 +124,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_imDropping) {
                 _imDropping = false;
-                _rb.AddForce(new Vector3(0, 9, 0), ForceMode.VelocityChange);
+                _rb.AddForce(new Vector3(0, 30, 0), ForceMode.VelocityChange);
             }
             if (new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude > 0.05f)
             {
@@ -189,24 +191,12 @@ public class PlayerController : MonoBehaviour
     {
         // on ground
         if(_isGrounded)
-            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f, ForceMode.Impulse);
 
         // in air
         else if(!_isGrounded)
-            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f * airMovementMul, ForceMode.Force);
+            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f * airMovementMul, ForceMode.Impulse);
         
-    }
-
-    private void SpeedControl()
-    {
-        Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
-
-        // limit velocity if needed
-        // if(flatVel.magnitude > moveSpeed)
-        // {
-        //     Vector3 limitedVel = flatVel.normalized * moveSpeed;
-        //     _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
-        // }
     }
 
     
@@ -275,14 +265,25 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Dash!");
         _imDropping = false;
-        _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.Impulse);
-        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.Impulse);
-    }
+        _dashing = true;
 
-    void resetGravity() {
+        _rb.useGravity = false;
+        _rb.linearDamping = 0;
+        _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
+        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
+
+        _cameraController.AlterFOV(5);
+
+        Invoke(nameof(EndDash), dashDuration);
+
+    }
+    void EndDash() {
+        _dashing = false;
         _rb.useGravity = true;
+        Debug.Log("Lebown Games");
+        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.90f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.9f), ForceMode.VelocityChange);
+        _cameraController.AlterFOV(-5);
     }
-
 
     void ResetDash()
     {
