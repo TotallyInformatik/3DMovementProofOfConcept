@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")] [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float airMovementMul = 0.02f;
-    [SerializeField] private float rbDrag = 10f;
+    [SerializeField] private float rbDrag = 5f;
     [SerializeField] private float playerHeight = 2f;
     [SerializeField] private float maxSpeed = 10;
 
@@ -181,7 +181,15 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(_rb.linearVelocity.magnitude);
+        if (_moveDirection.magnitude == 0)
+        {
+            rbDrag = 5;
+        }
+        else
+        {
+            rbDrag = 1.5f;
+        }
+
         MovePlayer();
 
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
