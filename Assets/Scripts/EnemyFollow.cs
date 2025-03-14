@@ -13,7 +13,8 @@ public class EnemyFollow : MonoBehaviour
     public float wanderRadius = 20f;
     private Vector3 goal;
     private int health = 3;
-    private bool dead = false;
+    public Rigidbody rib;
+    public float mv = 20f;
 
     Rigidbody rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -48,6 +49,9 @@ public class EnemyFollow : MonoBehaviour
             {
                 transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
             }
+
+        rib.linearVelocity = Vector3.ClampMagnitude(rib.linearVelocity, mv);
+
         //}
         /*
         if (!dead)

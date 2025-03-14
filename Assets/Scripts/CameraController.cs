@@ -41,6 +41,7 @@ public class CameraController : MonoBehaviour
     public void AddPitchInput(float amount)
     {
         xRot -= amount;
+        xRot = Mathf.Clamp(xRot, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRot, 0, 0);
     }
 
@@ -55,8 +56,8 @@ public class CameraController : MonoBehaviour
         float rightFactor = -right;
         if (Mathf.Abs(velocity.x) < Mathf.Epsilon) rightFactor = 0;
 
-        pitch = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (forwardFactor + 0.5f)), -maxTilt, maxTilt);
-        roll = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, (rightFactor + 0.5f)), -maxTilt, maxTilt);
+        pitch = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, forwardFactor + 0.5f), -maxTilt, maxTilt);
+        roll = Mathf.Clamp(Mathf.Lerp(-targetTilt, targetTilt, rightFactor + 0.5f), -maxTilt, maxTilt);
 
         _targetRotation = Quaternion.Euler(pitch, 0, roll);
         lastYRot = transform.rotation.y;
