@@ -31,6 +31,10 @@ public class CameraController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void SetFOV(float fov) {
+        cam.fieldOfView = fov;
+    }
+
     // Update is called once per frame
     void Update()
     {
