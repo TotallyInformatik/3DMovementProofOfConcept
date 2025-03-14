@@ -50,7 +50,7 @@ public class EnemyFollow : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
             }
 
-        rib.linearVelocity = Vector3.ClampMagnitude(rib.linearVelocity, mv);
+        //rib.linearVelocity = Vector3.ClampMagnitude(rib.linearVelocity, mv);
 
         //}
         /*
