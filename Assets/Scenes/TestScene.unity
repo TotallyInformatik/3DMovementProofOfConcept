@@ -1795,7 +1795,7 @@ MonoBehaviour:
   rbDrag: 1.5
   playerHeight: 2
   maxSpeed: 10
-  jumpForce: 31
+  jumpForce: 25
   jumpCooldown: 0.3
   jumpKey: 32
   sprintKey: 306
@@ -1812,7 +1812,7 @@ MonoBehaviour:
   dashCooldown: 2
   dashDelay: 0.1
   dashDuration: 0.1
-  dashForce: 400
+  dashForce: 300
   defaultFov: 75
   sprintFov: 90
   xSensitivity: 200
