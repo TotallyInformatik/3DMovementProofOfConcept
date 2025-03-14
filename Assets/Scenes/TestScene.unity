@@ -186,6 +186,8 @@ GameObject:
   - component: {fileID: 808991136}
   - component: {fileID: 808991135}
   - component: {fileID: 808991140}
+  - component: {fileID: 808991141}
+  - component: {fileID: 808991142}
   m_Layer: 6
   m_Name: EvilBEAN
   m_TagString: Untagged
@@ -326,6 +328,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 298189716}
   speed: 2
+  wanderTimer: 5
+  timer: 0
+  wanderRadius: 20
+  rib: {fileID: 0}
+  mv: 20
 --- !u!195 &808991141
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -360,10 +367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9029704dc0018549ae00bba93adf53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 298189716}
-  speed: 6
-  wanderRadius: 10
-  wanderTimer: 5
 --- !u!1 &920369533
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,8 +542,8 @@ MonoBehaviour:
   dashCooldown: 2
   dashDelay: 0.1
   dashForce: 400
-  defaultFov: 0
-  sprintFov: 0
+  defaultFov: 75
+  sprintFov: 90
   xSensitivity: 200
   ySensitivity: 200
   dropSpeed: 80

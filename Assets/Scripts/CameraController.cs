@@ -31,6 +31,12 @@ public class CameraController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void AlterFOV(float dFov) {
+        for (int i=0; i<Math.Abs(dFov); i++) {
+            cam.fieldOfView += Math.Sign(dFov) * 1;
+        }
+    }
+
     public void SetFOV(float fov) {
         cam.fieldOfView = fov;
     }

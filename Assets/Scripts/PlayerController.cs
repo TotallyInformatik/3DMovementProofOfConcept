@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Dash")] public float dashCooldown = 2f;
     public float dashDelay = 0.1f;
+    public float dashDuration = 0.1f;
     public float dashForce = 90f;
 
     #endregion
@@ -88,10 +89,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        _cameraController.SetFOV(defaultFov);
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         _cameraController = GetComponent<CameraController>();
+        _cameraController.SetFOV(defaultFov);
     }
 
     void Update()
@@ -270,16 +271,19 @@ public class PlayerController : MonoBehaviour
         _rb.linearDamping = 0;
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
         _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
-        Invoke(nameof(EndDash), 0.1f);
+
+        _cameraController.AlterFOV(5);
+
+        Invoke(nameof(EndDash), dashDuration);
 
     }
-
     void EndDash() {
         _dashing = false;
         _rb.useGravity = true;
-        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -1f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -1f), ForceMode.VelocityChange);
+        Debug.Log("Lebown Games");
+        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.90f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.9f), ForceMode.VelocityChange);
+        _cameraController.AlterFOV(-5);
     }
-
 
     void ResetDash()
     {
