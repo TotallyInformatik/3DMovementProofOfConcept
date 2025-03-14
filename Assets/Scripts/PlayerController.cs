@@ -95,9 +95,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        // Debug.Log("readyToJump " + readyToJump);
-        // Debug.Log("dropOnCooldown " + _dropOnCooldown);
-
 
         bool newIsGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
 
@@ -118,13 +115,13 @@ public class PlayerController : MonoBehaviour
             readyToJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
-        }   
+        }
 
 
         if (_isGrounded)
         {
-            if (_imDropping == true) {
-                _imDropping =  false;
+            if (_imDropping) {
+                _imDropping = false;
                 _rb.AddForce(new Vector3(0, 9, 0), ForceMode.VelocityChange);
             }
             if (new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude > 0.05f)
@@ -144,8 +141,6 @@ public class PlayerController : MonoBehaviour
             Dash();
         }
 
-        Debug.Log(_imDropping);
-        Debug.Log(_dropOnCooldown);
         if (Input.GetKeyDown(dropKey) && !(_imDropping) && !(_dropOnCooldown))
         {
             Drop();
@@ -157,7 +152,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
-        _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        _rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
     }
     private void ResetJump()
     {
@@ -185,17 +180,9 @@ public class PlayerController : MonoBehaviour
     {
         MovePlayer();
 
-
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
             Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
 
-
-        // if (_reachingApex && (_rb.linearVelocity.y < apexCriticalEdge))
-        // {
-        //     _reachingApex = false;
-        //     _rb.AddForce(Vector3.down * apexStrength, ForceMode.VelocityChange);
-        //     Debug.Log("will this affect lebron's legacy?");
-        // }
     }
 
     void MovePlayer()
@@ -215,11 +202,11 @@ public class PlayerController : MonoBehaviour
         Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
 
         // limit velocity if needed
-        if(flatVel.magnitude > moveSpeed)
-        {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
-        }
+        // if(flatVel.magnitude > moveSpeed)
+        // {
+        //     Vector3 limitedVel = flatVel.normalized * moveSpeed;
+        //     _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
+        // }
     }
 
     
@@ -288,9 +275,14 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Dash!");
         _imDropping = false;
-        _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
-        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
+        _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.Impulse);
+        _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.Impulse);
     }
+
+    void resetGravity() {
+        _rb.useGravity = true;
+    }
+
 
     void ResetDash()
     {
@@ -312,7 +304,6 @@ public class PlayerController : MonoBehaviour
 
     void DropAction()
     {
-        Debug.Log("Dropping!!!");
         _rb.AddForce(new Vector3(_rb.linearVelocity.x * -1f, -dropSpeed, _rb.linearVelocity.z * -1f), ForceMode.VelocityChange);
     }
 
