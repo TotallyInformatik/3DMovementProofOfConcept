@@ -1022,16 +1022,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4af2ba85f80cd48a4ad0a3e2bcb9b02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 40
+  moveSpeed: 1
   airMovementMul: 0.02
   rbDrag: 15
   playerHeight: 2
-  jumpForce: 40
+  jumpForce: 31
   jumpCooldown: 0.3
   jumpKey: 32
-  sprintKey: 304
+  sprintKey: 306
   meleeKey: 323
-  dashKey: 306
+  dashKey: 304
   dropKey: 113
   meleeCooldown: 0.5
   meleeDelay: 0.04
@@ -1042,12 +1042,12 @@ MonoBehaviour:
     m_Bits: 64
   dashCooldown: 2
   dashDelay: 0.1
-  dashForce: 90
-  defaultFov: 0
-  sprintFov: 0
+  dashForce: 400
+  defaultFov: 75
+  sprintFov: 90
   xSensitivity: 200
   ySensitivity: 200
-  dropSpeed: 20
+  dropSpeed: 80
   dropDelay: 0.1
   dropCooldown: 1.5
 --- !u!114 &920369540
@@ -1062,7 +1062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335096e1fc81d43038a751e0805409f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
+  cam: {fileID: 2017864247}
   cameraParent: {fileID: 2038552102}
   targetTilt: 5
   maxTilt: 3
