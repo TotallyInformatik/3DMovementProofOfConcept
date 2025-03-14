@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airMovementMul = 0.02f;
     [SerializeField] private float rbDrag = 10f;
     [SerializeField] private float playerHeight = 2f;
+    [SerializeField] private float maxSpeed = 10;
 
     [Header("Jumping")] 
     [SerializeField] private float jumpForce;
@@ -180,6 +181,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log(_rb.linearVelocity.magnitude);
         MovePlayer();
 
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
@@ -191,11 +193,16 @@ public class PlayerController : MonoBehaviour
     {
         // on ground
         if(_isGrounded)
+        {
             _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f, ForceMode.Impulse);
+        }
 
         // in air
-        else if(!_isGrounded)
+
+        else if(!_isGrounded && (_rb.linearVelocity.magnitude < maxSpeed || (_rb.linearVelocity + _moveDirection).magnitude <= _rb.linearVelocity.magnitude))
+        {
             _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f * airMovementMul, ForceMode.Impulse);
+        }
         
     }
 
