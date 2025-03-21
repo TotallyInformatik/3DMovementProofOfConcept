@@ -298,7 +298,6 @@ public class PlayerController : MonoBehaviour
         rbAirDrag = 60;
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
         _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
-
         _cameraController.AlterFOV(5);
 
         Invoke(nameof(EndDash), dashDuration);
