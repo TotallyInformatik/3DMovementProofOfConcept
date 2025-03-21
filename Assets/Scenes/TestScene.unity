@@ -1793,8 +1793,9 @@ MonoBehaviour:
   moveSpeed: 0.15
   airMovementMul: 0.4
   rbDrag: 1.5
+  rbAirDragNormal: 10
   playerHeight: 2
-  maxSpeed: 10
+  maxSpeed: 30
   jumpForce: 25
   jumpCooldown: 0.3
   jumpKey: 32
@@ -1809,10 +1810,12 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 64
-  dashCooldown: 2
+  dashCooldown: 1.5
   dashDelay: 0.1
   dashDuration: 0.1
   dashForce: 300
+  breakDashDuration: 1.5
+  rbAirDragDash: 400
   defaultFov: 75
   sprintFov: 90
   xSensitivity: 200

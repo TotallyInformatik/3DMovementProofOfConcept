@@ -9,8 +9,9 @@ public class PlayerController : MonoBehaviour
     #region Movement variables
 
     [Header("Movement")] [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float airMovementMul = 0.02f;
+    [SerializeField] private float airMovementMul = 20f;
     [SerializeField] private float rbDrag = 5f;
+    [SerializeField] private float rbAirDragNormal = 0.05f;
     [SerializeField] private float playerHeight = 2f;
     [SerializeField] private float maxSpeed = 10;
 
@@ -47,6 +48,8 @@ public class PlayerController : MonoBehaviour
     public float dashDelay = 0.1f;
     public float dashDuration = 0.1f;
     public float dashForce = 90f;
+    public float breakDashDuration = 1f;
+    public float rbAirDragDash = 5f;
 
     #endregion
 
@@ -73,11 +76,13 @@ public class PlayerController : MonoBehaviour
 
     float _horizontalMovement;
     float _verticalMovement;
+    float rbAirDrag = 0.05f;
 
     bool _meleeOnCooldown;
     bool _dashOnCooldown;
     bool _dropOnCooldown;
     bool _isGrounded;
+    bool _groundedSinceDash = true;
     bool _imDropping;
     bool _dashing = false;
 
@@ -98,7 +103,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
+        Debug.Log(rbAirDrag);
 
         bool newIsGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f);
 
@@ -131,6 +136,8 @@ public class PlayerController : MonoBehaviour
             {
                 _cameraController.ViewBobbing();
             }
+
+            _groundedSinceDash = true;
         }
         
 
@@ -181,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_moveDirection.magnitude == 0)
+        if (_moveDirection.magnitude == 0 && _isGrounded)
         {
             rbDrag = 5;
         }
@@ -195,6 +202,11 @@ public class PlayerController : MonoBehaviour
         _cameraController.HandleMovementTilt(transform.InverseTransformDirection(_rb.linearVelocity),
             Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Mouse X"));
 
+        if (_dashOnCooldown && rbAirDrag < rbAirDragDash && !_groundedSinceDash)
+        {
+            rbAirDrag += 300 * Time.fixedDeltaTime;
+        }
+
     }
 
     void MovePlayer()
@@ -202,16 +214,18 @@ public class PlayerController : MonoBehaviour
         // on ground
         if(_isGrounded)
         {
+            rbAirDrag = rbAirDragNormal;
             _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f, ForceMode.Impulse);
         }
 
         // in air
-
-        else if(!_isGrounded && (_rb.linearVelocity.magnitude < maxSpeed || (_rb.linearVelocity + _moveDirection).magnitude <= _rb.linearVelocity.magnitude))
+        else if(!_isGrounded)
         {
-            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f * airMovementMul, ForceMode.Impulse);
+            if ((_rb.linearVelocity.magnitude < maxSpeed || (_rb.linearVelocity + _moveDirection).magnitude <= _rb.linearVelocity.magnitude)) {
+                _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f * airMovementMul, ForceMode.Impulse);
+            }
         }
-        
+        _rb.AddForce(new Vector3(-_rb.linearVelocity.x * rbAirDrag * Time.fixedDeltaTime, _moveDirection.y, -_rb.linearVelocity.z * rbAirDrag * Time.fixedDeltaTime));
     }
 
     
@@ -220,10 +234,6 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded)
         {
             _rb.linearDamping = rbDrag;
-        }
-        else
-        {
-            _rb.linearDamping = 0;
         }
     }
 
@@ -281,23 +291,31 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Dash!");
         _imDropping = false;
         _dashing = true;
+        _groundedSinceDash = false;
 
         _rb.useGravity = false;
         _rb.linearDamping = 0;
+        rbAirDrag = 60;
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
         _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
 
         _cameraController.AlterFOV(5);
 
         Invoke(nameof(EndDash), dashDuration);
+        Invoke(nameof(BreakDash), breakDashDuration);
 
     }
     void EndDash() {
         _dashing = false;
         _rb.useGravity = true;
         Debug.Log("Lebown Games");
-        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.90f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.9f), ForceMode.VelocityChange);
+        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.7f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.7f), ForceMode.VelocityChange);
         _cameraController.AlterFOV(-5);
+    }
+
+    void BreakDash()
+    {
+        rbAirDrag = rbAirDragNormal;
     }
 
     void ResetDash()
