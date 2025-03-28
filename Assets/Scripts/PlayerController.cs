@@ -258,7 +258,7 @@ public class PlayerController : MonoBehaviour
             HitTarget(hit.point);
             if (hit.transform.TryGetComponent<Rigidbody>(out Rigidbody R))
             {
-                hit.transform.GetComponent<EnemyFollow>().Hit();
+                hit.transform.GetComponent<EnemyScript>().Hit();
                 R.AddForceAtPosition(hit.point, _cameraController.cam.transform.forward * 600f);
             }
         }
@@ -298,7 +298,8 @@ public class PlayerController : MonoBehaviour
         rbAirDrag = 60;
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
         _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
-        _cameraController.AlterFOV(5);
+
+        _cameraController.AlterFOV(3);
 
         Invoke(nameof(EndDash), dashDuration);
         Invoke(nameof(BreakDash), breakDashDuration);
@@ -308,8 +309,8 @@ public class PlayerController : MonoBehaviour
         _dashing = false;
         _rb.useGravity = true;
         Debug.Log("Lebown Games");
-        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.7f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.7f), ForceMode.VelocityChange);
-        _cameraController.AlterFOV(-5);
+        _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.90f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.9f), ForceMode.VelocityChange);
+        _cameraController.AlterFOV(-3);
     }
 
     void BreakDash()
