@@ -14,17 +14,13 @@ public class EnemyScript : MonoBehaviour
     public float wanderRadius = 20f;
     private Vector3 goal;
     private int health = 3;
-    public Rigidbody rib;
-    public float mv = 20f;
     public GameObject bulletPrefab;
     public float bulletSpeed;
     public float bulletTTL;
 
-    Rigidbody rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //target = GameObject.FindGameObjectWithTag("PlayerBEAN").GetComponent<Transform>();
         timer = wanderTimer;
         goal = target.position;
 
@@ -42,19 +38,15 @@ public class EnemyScript : MonoBehaviour
         newBulletRB.AddForce((target.position - instantiatePosition) * 0.00001f * bulletSpeed, ForceMode.Force);
 
         Destroy(newBullet, bulletTTL); 
-
     }
 }
 
     // Update is called once per frame  
     void Update()
     {
-
         transform.eulerAngles = new Vector3(0, 0, 0);
         goal = target.position;
         transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
-
-
     }
     void OnTriggerEnter(Collider other)
     {
