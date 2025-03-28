@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_moveDirection.magnitude == 0 && _isGrounded)
         {
-            rbDrag = 5;
+            rbDrag = 10;
         }
         else
         {
