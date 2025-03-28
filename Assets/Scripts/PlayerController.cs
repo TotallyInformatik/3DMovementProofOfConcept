@@ -287,7 +287,7 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(new Vector3(0, _rb.linearVelocity.y * -1f, 0), ForceMode.VelocityChange);
         _rb.AddForce(_cameraController.cam.transform.forward * dashForce, ForceMode.VelocityChange);
 
-        _cameraController.AlterFOV(5);
+        _cameraController.AlterFOV(3);
 
         Invoke(nameof(EndDash), dashDuration);
 
@@ -297,7 +297,7 @@ public class PlayerController : MonoBehaviour
         _rb.useGravity = true;
         Debug.Log("Lebown Games");
         _rb.AddForce(new Vector3(_rb.linearVelocity.x * -.90f, _rb.linearVelocity.y * -1f, _rb.linearVelocity.z * -.9f), ForceMode.VelocityChange);
-        _cameraController.AlterFOV(-5);
+        _cameraController.AlterFOV(-3);
     }
 
     void ResetDash()
