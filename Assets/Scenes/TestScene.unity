@@ -1457,7 +1457,7 @@ GameObject:
   - component: {fileID: 808991140}
   - component: {fileID: 808991141}
   m_Layer: 6
-  m_Name: EvilBEAN
+  m_Name: Diddy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

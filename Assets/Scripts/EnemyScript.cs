@@ -34,6 +34,8 @@ public class EnemyScript : MonoBehaviour
     while(true) {
         yield return new WaitForSeconds(2);
 
+        Instantiate(bulletPrefab);
+
     }
 }
 
@@ -42,28 +44,6 @@ public class EnemyScript : MonoBehaviour
     {
 
         transform.eulerAngles = new Vector3(0, 0, 0);
-        //Vector3 goal = transform.position;
-        // timer += Time.deltaTime;
-        // //while (health > 0)
-        // //{
-        //     if (triggered && !hit && health > 0)
-        //     {
-        //         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        //     }
-        //     else if (timer >= wanderTimer && !triggered && !hit && health > 0)
-        //     {
-        //         Vector3 pos = transform.position;
-        //         float x = Random.Range(pos.x - wanderRadius, pos.x + wanderRadius);
-        //         float z = Random.Range(pos.z - wanderRadius, pos.z + wanderRadius);
-        //         goal = new Vector3(x, pos.y, z);
-
-        //         timer = 0;
-        //     }
-        //     if (!triggered && !hit && health > 0)
-        //     {
-        //         transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
-        //     }
-
         goal = target.position;
         transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);
 
