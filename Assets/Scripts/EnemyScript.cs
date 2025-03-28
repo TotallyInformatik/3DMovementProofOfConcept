@@ -17,6 +17,8 @@ public class EnemyScript : MonoBehaviour
     public Rigidbody rib;
     public float mv = 20f;
     public GameObject bulletPrefab;
+    public float bulletSpeed;
+    public float bulletTTL;
 
     Rigidbody rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,14 +29,19 @@ public class EnemyScript : MonoBehaviour
         goal = target.position;
 
         StartCoroutine(FireCoroutine());
-
     }
 
     IEnumerator FireCoroutine() {
     while(true) {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4);
 
-        Instantiate(bulletPrefab);
+        Vector3 instantiatePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        GameObject newBullet = Instantiate(bulletPrefab, instantiatePosition, Quaternion.identity);
+
+        Rigidbody newBulletRB = newBullet.GetComponent<Rigidbody>();
+        newBulletRB.AddForce((target.position - instantiatePosition) * 0.00001f * bulletSpeed, ForceMode.Force);
+
+        Destroy(newBullet, bulletTTL); 
 
     }
 }

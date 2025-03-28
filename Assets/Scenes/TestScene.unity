@@ -1602,6 +1602,8 @@ MonoBehaviour:
   rib: {fileID: 0}
   mv: 20
   bulletPrefab: {fileID: 6884248928939997354, guid: cb9f55ae0b6df45738501b7ae27aabf8, type: 3}
+  bulletSpeed: 1
+  bulletTTL: 3
 --- !u!195 &808991141
 NavMeshAgent:
   m_ObjectHideFlags: 0
